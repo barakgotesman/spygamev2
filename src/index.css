@@ -1,0 +1,76 @@
+@import '@fontsource-variable/instrument-sans';
+@import '@fontsource/big-shoulders-display/latin-700';
+@import '@fontsource/big-shoulders-display/latin-800';
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+
+  --color-ink: oklch(0.15 0.012 250);
+  --color-surface: oklch(0.2 0.014 250);
+  --color-raised: oklch(0.26 0.016 250);
+  --color-line: oklch(0.36 0.016 250);
+  --color-paper: oklch(0.94 0.016 85);
+  --color-muted: oklch(0.72 0.02 85);
+  --color-signal: oklch(0.68 0.21 32);
+  --color-signal-ink: oklch(0.14 0.03 30);
+  --color-ok: oklch(0.78 0.14 150);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-ink);
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-ink font-sans text-paper antialiased;
+    min-height: 100dvh;
+    overscroll-behavior-y: none;
+  }
+  button {
+    @apply cursor-pointer select-none;
+    touch-action: manipulation;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  ::selection {
+    background: var(--color-signal);
+    color: var(--color-signal-ink);
+  }
+  input {
+    font-size: 16px; /* prevents iOS focus zoom */
+  }
+  input::placeholder {
+    color: var(--color-muted);
+    opacity: 0.7;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line) transparent;
+  }
+}
+
+@utility display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  line-height: 0.9;
+  text-wrap: balance;
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility safe-x {
+  padding-left: max(1.25rem, env(safe-area-inset-left));
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+}

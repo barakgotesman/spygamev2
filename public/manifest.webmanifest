@@ -1,0 +1,11 @@
+{
+  "name": "Spy Game",
+  "short_name": "Spy Game",
+  "description": "A pass-the-phone party game. Find the spy before time runs out.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0d10",
+  "theme_color": "#0b0d10",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
