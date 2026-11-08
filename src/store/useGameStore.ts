@@ -17,6 +17,8 @@ type GameState = {
   revealSeat: number
   timer: TimerState
   votes: number[]
+  /** True once the spies have been revealed at the end of a round. */
+  verdict: boolean
 
   changePlayers: (delta: number) => void
   changeSpies: (delta: number) => void
@@ -27,6 +29,7 @@ type GameState = {
   resumeTimer: () => void
   finishTimer: () => void
   vote: (seat: number, delta: 1 | -1) => void
+  revealVerdict: () => void
   openSettings: () => void
   closeSettings: () => void
   reset: () => void
@@ -41,6 +44,7 @@ export const useGameStore = create<GameState>()((set, get) => ({
   revealSeat: 0,
   timer: { status: 'idle' },
   votes: [],
+  verdict: false,
 
   changePlayers: (delta) => set((s) => ({ config: setPlayers(s.config, s.config.players + delta) })),
   changeSpies: (delta) => set((s) => ({ config: setSpies(s.config, s.config.spies + delta) })),
@@ -53,6 +57,7 @@ export const useGameStore = create<GameState>()((set, get) => ({
       phase: 'reveal',
       revealSeat: 0,
       timer: { status: 'idle' },
+      verdict: false,
       votes: Array.from({ length: round.players }, () => 0),
     })
     return true
@@ -85,7 +90,9 @@ export const useGameStore = create<GameState>()((set, get) => ({
       return { votes: s.votes.map((v, i) => (i === seat ? v + delta : v)) }
     }),
 
+  revealVerdict: () => set({ verdict: true }),
+
   openSettings: () => set({ phase: 'settings' }),
   closeSettings: () => set({ phase: 'setup' }),
-  reset: () => set({ phase: 'setup', round: null, revealSeat: 0, timer: { status: 'idle' }, votes: [] }),
+  reset: () => set({ phase: 'setup', round: null, revealSeat: 0, timer: { status: 'idle' }, votes: [], verdict: false }),
 }))

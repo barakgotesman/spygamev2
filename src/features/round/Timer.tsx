@@ -1,6 +1,7 @@
 import { Pause, Play } from 'lucide-react'
 import { useEffect } from 'react'
-import { Button } from '../../components/Button'
+import { Digits } from '../../components/Digits'
+import { Ticket } from '../../components/Ticket'
 import { useNow } from '../../hooks/useNow'
 import { formatTime } from '../../lib/formatTime'
 import { vibrate } from '../../lib/vibrate'
@@ -33,37 +34,42 @@ export function Timer(): React.JSX.Element {
     vibrate([300, 120, 300, 120, 600])
   }, [expired, finishTimer])
 
-  const urgent = timer.status === 'running' && remainingMs <= 30_000
   const finished = timer.status === 'finished'
+  const urgent = timer.status === 'running' && remainingMs <= 30_000
+
+  const action =
+    timer.status === 'idle'
+      ? { label: 'Punch in', icon: <Play className="size-7" strokeWidth={2.5} aria-hidden />, run: () => startTimer(durationMs) }
+      : timer.status === 'running'
+        ? { label: 'Pause', icon: <Pause className="size-7" strokeWidth={2.5} aria-hidden />, run: pauseTimer }
+        : timer.status === 'paused'
+          ? { label: 'Resume', icon: <Play className="size-7" strokeWidth={2.5} aria-hidden />, run: resumeTimer }
+          : null
 
   return (
-    <section className="flex flex-col items-center gap-5 rounded-3xl bg-surface p-6" aria-label="Timer">
-      <p
-        role="timer"
-        aria-live="off"
-        className={`display tabular text-[7.5rem] leading-none transition-colors duration-300 ${
-          finished || urgent ? 'text-signal' : 'text-paper'
-        } ${urgent && !finished ? 'motion-safe:animate-pulse' : ''}`}
-      >
-        {formatTime(remainingMs)}
-      </p>
-      {finished ? (
-        <p className="display text-4xl text-signal" role="status">
+    <Ticket
+      className={`${finished || urgent ? 'bg-raffle text-paper' : 'bg-bubblegum text-ink'} ${urgent ? 'motion-safe:animate-wiggle' : '-rotate-1'} transition-colors duration-300 [--stub:5rem]`}
+    >
+      <div className="flex flex-col items-center gap-1 px-4 pt-5 pb-6">
+        <p className="print text-sm">{finished ? 'Expired' : 'Valid for'}</p>
+        <div role="timer" aria-live="off">
+          <Digits text={formatTime(remainingMs)} className="text-[6.5rem] leading-none" />
+        </div>
+      </div>
+      {action ? (
+        <button
+          type="button"
+          onClick={action.run}
+          className="display flex h-[var(--stub)] w-full items-center justify-center gap-3 bg-ink text-3xl text-paper transition-[filter] duration-150 hover:brightness-125 active:brightness-90"
+        >
+          {action.icon}
+          {action.label}
+        </button>
+      ) : (
+        <p role="status" className="display grid h-[var(--stub)] place-items-center bg-ink text-3xl text-paper">
           Time's up
         </p>
-      ) : timer.status === 'idle' ? (
-        <Button variant="primary" className="w-full" onClick={() => startTimer(durationMs)}>
-          <Play aria-hidden /> Start timer
-        </Button>
-      ) : timer.status === 'running' ? (
-        <Button className="w-full" onClick={pauseTimer}>
-          <Pause aria-hidden /> Pause
-        </Button>
-      ) : (
-        <Button variant="primary" className="w-full" onClick={resumeTimer}>
-          <Play aria-hidden /> Resume
-        </Button>
       )}
-    </section>
+    </Ticket>
   )
 }

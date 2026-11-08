@@ -40,11 +40,12 @@ Spies do not know each other. Default locations live in `src/data/defaultLocatio
 - Accessibility: semantic elements, 44px minimum touch targets, visible focus rings, aria labels on icon buttons, respect `prefers-reduced-motion`.
 - Mobile-first: `dvh` units, safe-area insets, no tap-highlight, inputs at 16px+ to avoid iOS zoom, keep screen awake during a round (Wake Lock).
 - Never leak a role: reveal screens must auto-hide and never persist a role in the DOM when hidden.
+- Destructive actions (cancel game) go through `ConfirmDialog`.
 
 ## Design
-Dark "spy dossier / noir" look: strong type, one accent color, tactile press feedback, purposeful motion only.
-Use these skills when working on UI: `impeccable`, `design-taste-frontend`, `mobile-native`, `apple-design`, `emil-design-eng`, `animate`,
-`animation-performance`, `break-ui` (stress-test worst-case data), `vercel:react-best-practices` (review).
+"Ticket roll" world, not a dark dashboard: every screen is flooded with one saturated ticket stock (raffle red, cobalt, mint, a per-player color on reveal) and the objects on it are notched, perforated tickets printed in ink. Each player gets an "ADMIT ONE" ticket to the location; the spy's ticket is stamped VOID. Votes are tally marks. Fonts (self-hosted): Ultra (display), Bricolage Grotesque (UI), Courier Prime (printed details).
+Avoid: near-black + neon, condensed all-caps display, generic rounded dark cards. Role text must always fit (`useFitText`); test long names at 320x568.
+Use these skills when working on UI: `impeccable`, `mobile-native`, `emil-design-eng`, `animate`, `break-ui` (stress-test worst-case data), `vercel:react-best-practices` (review).
 
 ## Git
 Remote `origin` is https://github.com/barakgotesman/spygamev2.git. Never push, force-push or open PRs without asking.

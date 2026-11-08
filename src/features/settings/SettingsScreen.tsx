@@ -20,12 +20,12 @@ export function SettingsScreen(): React.JSX.Element {
     <ScreenShell>
       <header className="flex items-center gap-4 pt-2">
         <IconButton label="Back" onClick={closeSettings}>
-          <ArrowLeft aria-hidden />
+          <ArrowLeft aria-hidden strokeWidth={3} />
         </IconButton>
         <h1 className="display text-5xl">Settings</h1>
       </header>
 
-      <div role="tablist" aria-label="Settings sections" className="grid grid-cols-2 gap-1 rounded-xl bg-surface p-1">
+      <div role="tablist" aria-label="Settings sections" className="grid grid-cols-2 gap-2">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -33,8 +33,8 @@ export function SettingsScreen(): React.JSX.Element {
             type="button"
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
-            className={`min-h-12 rounded-lg text-lg font-semibold transition-colors duration-150 ${
-              tab === t.id ? 'bg-raised text-paper' : 'text-muted hover:text-paper'
+            className={`display min-h-14 rounded-xl border-[3px] border-ink text-2xl transition-[transform,background-color] duration-150 active:scale-95 ${
+              tab === t.id ? 'bg-ink text-paper' : 'bg-paper text-ink'
             }`}
           >
             {t.label}

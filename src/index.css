@@ -1,76 +1,128 @@
-@import '@fontsource-variable/instrument-sans';
-@import '@fontsource/big-shoulders-display/latin-700';
-@import '@fontsource/big-shoulders-display/latin-800';
+@import '@fontsource-variable/bricolage-grotesque/wght.css';
+@import '@fontsource/ultra/latin-400';
+@import '@fontsource/courier-prime/latin-400';
+@import '@fontsource/courier-prime/latin-700';
 @import 'tailwindcss';
 
+/*
+ * Ticket-roll world: every screen is flooded with one saturated ticket stock,
+ * and the objects on it (tickets, stubs, stamps) are printed in ink on other stocks.
+ */
 @theme {
-  --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
+  --font-sans: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Ultra', 'Rockwell Extra Bold', serif;
+  --font-print: 'Courier Prime', 'Courier New', monospace;
 
-  --color-ink: oklch(0.15 0.012 250);
-  --color-surface: oklch(0.2 0.014 250);
-  --color-raised: oklch(0.26 0.016 250);
-  --color-line: oklch(0.36 0.016 250);
-  --color-paper: oklch(0.94 0.016 85);
-  --color-muted: oklch(0.72 0.02 85);
-  --color-signal: oklch(0.68 0.21 32);
-  --color-signal-ink: oklch(0.14 0.03 30);
-  --color-ok: oklch(0.78 0.14 150);
+  --color-ink: oklch(0.22 0.07 285);
+  --color-paper: oklch(0.975 0.014 95);
+  --color-canary: oklch(0.9 0.17 98);
+  --color-raffle: oklch(0.64 0.23 27);
+  --color-cobalt: oklch(0.5 0.22 265);
+  --color-bubblegum: oklch(0.8 0.15 355);
+  --color-mint: oklch(0.88 0.15 160);
+  --color-sky: oklch(0.85 0.12 215);
+  --color-tangerine: oklch(0.78 0.17 55);
+  --color-lilac: oklch(0.8 0.12 305);
+  --color-foil: oklch(0.82 0.01 260);
 
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-snap: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-wiggle: wiggle 0.5s ease-in-out infinite;
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(-1.2deg); }
+    50% { transform: rotate(1.2deg); }
+  }
 }
 
 @layer base {
   html {
-    color-scheme: dark;
-    background: var(--color-ink);
     -webkit-tap-highlight-color: transparent;
+    background-color: var(--ground, var(--color-raffle));
+    transition: background-color 450ms var(--ease-snap);
   }
   body {
-    @apply bg-ink font-sans text-paper antialiased;
+    @apply font-sans text-ink antialiased;
     min-height: 100dvh;
+    background-color: var(--ground, var(--color-raffle));
+    transition: background-color 450ms var(--ease-snap);
     overscroll-behavior-y: none;
+    /* printed-paper tooth, one static layer */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
   }
+  html[data-phase='setup'] { --ground: var(--color-raffle); }
+  html[data-phase='round'] { --ground: var(--color-cobalt); }
+  html[data-phase='settings'] { --ground: var(--color-mint); }
+  html[data-phase='reveal'] { --ground: var(--seat, var(--color-tangerine)); }
+  html[data-phase='verdict'] { --ground: var(--color-canary); }
+
   button {
     @apply cursor-pointer select-none;
     touch-action: manipulation;
   }
   :focus-visible {
-    outline: 2px solid var(--color-signal);
+    outline: 3px solid var(--color-ink);
     outline-offset: 3px;
-    border-radius: 4px;
+    border-radius: 6px;
   }
   ::selection {
-    background: var(--color-signal);
-    color: var(--color-signal-ink);
+    background: var(--color-ink);
+    color: var(--color-paper);
   }
   input {
     font-size: 16px; /* prevents iOS focus zoom */
   }
   input::placeholder {
-    color: var(--color-muted);
-    opacity: 0.7;
+    color: color-mix(in oklch, var(--color-ink) 55%, transparent);
   }
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-line) transparent;
+    scrollbar-color: var(--color-ink) transparent;
   }
 }
 
 @utility display {
   font-family: var(--font-display);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  line-height: 0.9;
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
   text-wrap: balance;
 }
 
-@utility tabular {
-  font-variant-numeric: tabular-nums;
+@utility print {
+  font-family: var(--font-print);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 @utility safe-x {
   padding-left: max(1.25rem, env(safe-area-inset-left));
   padding-right: max(1.25rem, env(safe-area-inset-right));
+}
+
+/* A ticket: side notches cut where the stub is perforated (--split). */
+@utility ticket {
+  --notch: 13px;
+  --stub: 6rem;
+  --split: calc(100% - var(--stub));
+  mask:
+    radial-gradient(var(--notch) at 0 var(--split), #0000 97%, #000) left / 51% 100% no-repeat,
+    radial-gradient(var(--notch) at 100% var(--split), #0000 97%, #000) right / 51% 100% no-repeat;
+}
+
+/* Dotted perforation line sitting on the split. */
+@utility perforation {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: var(--split);
+  border-top: 3px dotted color-mix(in oklch, var(--color-ink) 45%, transparent);
+  pointer-events: none;
+}
+
+/* Scratch-off foil: brushed silver with a glint. */
+@utility foil {
+  background:
+    repeating-linear-gradient(115deg, #fff3 0 2px, #0000 2px 7px),
+    linear-gradient(135deg, oklch(0.88 0.01 260), oklch(0.7 0.015 260) 45%, oklch(0.9 0.01 260) 60%, oklch(0.72 0.015 260));
 }

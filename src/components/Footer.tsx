@@ -1,16 +1,16 @@
-export function Footer(): React.JSX.Element {
+export function Footer({ className = '' }: { className?: string }): React.JSX.Element {
   return (
-    <footer className="mt-auto pt-6 text-center text-sm text-muted">
-      Built by{' '}
+    <footer className={`print pt-2 text-center text-xs ${className}`}>
+      Printed by{' '}
       <a
-        className="underline decoration-line underline-offset-4 hover:text-paper"
+        className="underline decoration-2 underline-offset-4"
         href="https://www.linkedin.com/in/barak-gotesman-04424015b/"
         target="_blank"
         rel="noreferrer"
       >
         Barak Gotesman
       </a>
-      {' · '}v1.0
+      {' · v1.0'}
     </footer>
   )
 }
