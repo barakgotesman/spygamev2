@@ -33,9 +33,9 @@ export function ConfirmDialog({ open, title, body, confirmLabel, cancelLabel, on
       onClick={(e) => {
         if (e.target === ref.current) onCancel()
       }}
-      className="m-auto w-[min(24rem,calc(100%-2.5rem))] rounded-3xl border-[3px] border-ink bg-paper p-6 text-ink backdrop:bg-ink/70"
+      className="m-auto w-[min(24rem,calc(100%-2.5rem))] rounded-2xl border-[3px] border-ink bg-card p-6 text-ink shadow-hard-lg backdrop:bg-ink/60"
     >
-      <h2 id="confirm-title" className="display text-4xl">
+      <h2 id="confirm-title" className="display text-3xl">
         {title}
       </h2>
       <p className="mt-3 text-lg font-medium">{body}</p>
@@ -43,7 +43,7 @@ export function ConfirmDialog({ open, title, body, confirmLabel, cancelLabel, on
         <Button variant="paper" className="min-h-14" autoFocus onClick={onCancel}>
           {cancelLabel}
         </Button>
-        <Button variant="ink" className="min-h-14" onClick={onConfirm}>
+        <Button variant="pink" className="min-h-14" onClick={onConfirm}>
           {confirmLabel}
         </Button>
       </div>

@@ -1,11 +1,11 @@
-import { Scissors, X } from 'lucide-react'
+import { Send, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button } from '../../components/Button'
 import { ConfirmDialog } from '../../components/ConfirmDialog'
 import { IconButton } from '../../components/IconButton'
 import { ScreenShell } from '../../components/ScreenShell'
-import { seatStock } from '../../lib/seatColors'
+import { seatInk } from '../../lib/seatColors'
 import { useGameStore } from '../../store/useGameStore'
 import { RoleCard } from './RoleCard'
 
@@ -17,20 +17,15 @@ export function RevealScreen(): React.JSX.Element | null {
   const [seenSeat, setSeenSeat] = useState(-1)
   const [confirmCancel, setConfirmCancel] = useState(false)
 
-  // Each player's turn floods the screen with their own ticket color.
-  const stock = seatStock(seat).name
-  useEffect(() => {
-    document.documentElement.style.setProperty('--seat', `var(--color-${stock})`)
-  }, [stock])
-
   if (!round) return null
   const isLast = seat === round.players - 1
   const seen = seenSeat === seat
+  const ink = seatInk(seat)
 
   return (
     <ScreenShell>
       <header className="flex items-center justify-between gap-4 pt-2">
-        <h1 className="display text-4xl">Player {seat + 1}</h1>
+        <h1 className={`display -rotate-1 rounded-lg border-[3px] border-ink px-4 py-2 text-3xl shadow-hard ${ink.bg} ${ink.fg}`}>Player {seat + 1}</h1>
         <IconButton label="Cancel game" onClick={() => setConfirmCancel(true)}>
           <X aria-hidden />
         </IconButton>
@@ -58,13 +53,13 @@ export function RevealScreen(): React.JSX.Element | null {
       </div>
 
       <Button variant="ink" className="min-h-16 text-lg" disabled={!seen} onClick={nextReveal}>
-        <Scissors className="size-5 -rotate-90" strokeWidth={2.5} aria-hidden />
+        <Send className="size-5" strokeWidth={2.5} aria-hidden />
         {isLast ? 'Start the round' : `Pass to player ${seat + 2}`}
       </Button>
       <ConfirmDialog
         open={confirmCancel}
         title="Cancel this game?"
-        body="Everyone's tickets are thrown away and you start over."
+        body="Everyone's postcards are thrown away and you start over."
         cancelLabel="Keep playing"
         confirmLabel="Cancel game"
         onCancel={() => setConfirmCancel(false)}

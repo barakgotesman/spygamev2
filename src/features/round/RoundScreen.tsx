@@ -25,15 +25,15 @@ export function RoundScreen(): React.JSX.Element {
   }
 
   return (
-    <ScreenShell className="text-paper">
+    <ScreenShell>
       <header className="pt-2">
-        <h1 className="display text-5xl">{spies > 1 ? `Find the ${spies} spies` : 'Find the spy'}</h1>
-        <p className="mt-2 text-lg font-medium">Ask each other questions. Vote when you're ready.</p>
+        <h1 className="display text-4xl">{spies > 1 ? `Find the ${spies} spies` : 'Find the spy'}</h1>
+        <p className="mt-2 text-lg font-medium opacity-80">Ask each other questions. Vote when you're ready.</p>
       </header>
       <Timer />
       <Votes />
       <div className="flex flex-col gap-2 pt-2">
-        <Button variant="paper" className="min-h-16 text-lg" onClick={revealVerdict}>
+        <Button variant="pink" className="min-h-16 text-lg" onClick={revealVerdict}>
           Reveal the {spies > 1 ? 'spies' : 'spy'}
         </Button>
         <Button variant="ghost" onClick={() => setConfirmCancel(true)}>
@@ -43,7 +43,7 @@ export function RoundScreen(): React.JSX.Element {
       <ConfirmDialog
         open={confirmCancel}
         title="Cancel this game?"
-        body="The timer and all votes are thrown away and you start over."
+        body="The clock and all votes are thrown away and you start over."
         cancelLabel="Keep playing"
         confirmLabel="Cancel game"
         onCancel={() => setConfirmCancel(false)}

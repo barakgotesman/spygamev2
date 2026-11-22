@@ -1,5 +1,4 @@
 import { AnimatePresence, MotionConfig, motion } from 'motion/react'
-import { useEffect } from 'react'
 import { RevealScreen } from './features/reveal/RevealScreen'
 import { RoundScreen } from './features/round/RoundScreen'
 import { SettingsScreen } from './features/settings/SettingsScreen'
@@ -16,13 +15,7 @@ const screens: Record<Phase, () => React.JSX.Element | null> = {
 
 export function App(): React.JSX.Element {
   const phase = useGameStore((s) => s.phase)
-  const verdict = useGameStore((s) => s.verdict)
   const Screen = screens[phase]
-
-  // The page ground is a flood of ticket stock; CSS picks the color from this attribute.
-  useEffect(() => {
-    document.documentElement.dataset.phase = phase === 'round' && verdict ? 'verdict' : phase
-  }, [phase, verdict])
 
   return (
     <MotionConfig reducedMotion="user">

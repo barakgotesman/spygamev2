@@ -1,10 +1,10 @@
-import { Fingerprint } from 'lucide-react'
+import { Hand } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useState, type KeyboardEvent } from 'react'
+import { Postcard } from '../../components/Postcard'
+import { Scene } from '../../components/Scene'
 import { useFitText } from '../../hooks/useFitText'
-import { LocationIcon } from '../../components/LocationIcon'
-import { Ticket } from '../../components/Ticket'
-import { seatNumber } from '../../lib/seatColors'
+import { seatInk, seatNumber } from '../../lib/seatColors'
 import { vibrate } from '../../lib/vibrate'
 import type { Location } from '../../types/game'
 
@@ -17,11 +17,12 @@ type RoleCardProps = {
 }
 
 /**
- * The player's ticket. Hold the foil to read it; letting go covers it again instantly.
+ * The player's postcard. Hold the sealed flap to read it; letting go seals it again instantly.
  * The role is only in the DOM while held, so it can never linger for the next player.
  */
 export function RoleCard({ seat, total, isSpy, location, onSeen }: RoleCardProps): React.JSX.Element {
   const [shown, setShown] = useState(false)
+  const ink = seatInk(seat)
 
   const show = (): void => {
     setShown(true)
@@ -40,17 +41,25 @@ export function RoleCard({ seat, total, isSpy, location, onSeen }: RoleCardProps
   }
 
   return (
-    <Ticket className="flex h-full min-h-[max(21rem,min(34rem,calc(100dvh-13rem)))] flex-col bg-paper text-ink [--stub:6rem]">
-      <div className="flex items-center justify-between px-6 pt-5">
-        <p className="print text-base">Admit one</p>
-        <p className="print text-base">
-          {seat + 1}/{total}
+    <Postcard className="h-full min-h-[max(21rem,min(36rem,calc(100dvh-13rem)))]">
+      <div className="flex items-start justify-between gap-3 px-4 pt-3">
+        <div>
+          <p className="print text-sm">Post card</p>
+          <p className="print text-[0.7rem] opacity-60">
+            {seat + 1} of {total}
+          </p>
+        </div>
+        <p
+          className={`display grid size-14 place-items-center border-[3px] border-dashed border-ink text-2xl ${ink.bg} ${ink.fg}`}
+          aria-hidden
+        >
+          {seatNumber(seat)}
         </p>
       </div>
 
       <button
         type="button"
-        aria-label={`Hold to read the ticket of player ${seat + 1}`}
+        aria-label={`Hold to read the postcard of player ${seat + 1}`}
         onPointerDown={show}
         onPointerUp={hide}
         onPointerCancel={hide}
@@ -59,71 +68,73 @@ export function RoleCard({ seat, total, isSpy, location, onSeen }: RoleCardProps
         onKeyUp={onKeyUp}
         onBlur={hide}
         onContextMenu={(e) => e.preventDefault()}
-        className="relative mx-5 mt-4 mb-6 flex-1 touch-none overflow-hidden rounded-2xl border-[3px] border-ink select-none"
+        className="relative mx-3 mt-3 mb-3 flex-1 touch-none overflow-hidden rounded-sm border-[3px] border-ink select-none"
       >
         {shown && <RoleFace isSpy={isSpy} location={location} />}
 
         <motion.div
           initial={false}
           animate={{ clipPath: shown ? 'inset(0 0 100% 0)' : 'inset(0 0 0% 0)' }}
-          transition={shown ? { duration: 0.28, ease: [0.16, 1, 0.3, 1] } : { duration: 0 }}
-          className="foil absolute inset-0 grid place-items-center"
+          transition={shown ? { duration: 0.26, ease: [0.16, 1, 0.3, 1] } : { duration: 0 }}
+          className="halftone absolute inset-0 grid place-items-center bg-yellow"
           aria-hidden
         >
           <div className="flex flex-col items-center gap-3 text-ink">
-            <Fingerprint className="size-14" strokeWidth={1.5} />
-            <p className="display text-3xl">Hold to scratch</p>
+            <span className={`grid size-20 -rotate-6 place-items-center rounded-full border-[3px] border-ink shadow-hard ${ink.bg} ${ink.fg}`}>
+              <Hand className="size-9" strokeWidth={2.25} />
+            </span>
+            <p className="display text-center text-2xl">Hold to read it</p>
+            <p className="print text-[0.65rem]">sealed · eyes only</p>
           </div>
         </motion.div>
       </button>
 
-      <div className="flex items-end justify-between px-6 pb-4">
-        <div>
-          <p className="print text-xs">No.</p>
-          <p className="display text-6xl">{seatNumber(seat)}</p>
-        </div>
-        <div className="flex flex-col items-end gap-1" aria-hidden>
-          <div className="h-10 w-36 bg-[repeating-linear-gradient(90deg,var(--color-ink)_0_3px,transparent_3px_5px,var(--color-ink)_5px_6px,transparent_6px_10px)]" />
-          <p className="print text-[0.65rem]">
-            SPY-{seatNumber(seat)}-{String(total).padStart(2, '0')}
-          </p>
-        </div>
+      <div className="mx-4 mb-4 flex flex-col gap-2.5" aria-hidden>
+        <p className="print text-[0.7rem]">To: player {seatNumber(seat)}</p>
+        <div className="h-px bg-ink/40" />
+        <div className="h-px bg-ink/40" />
       </div>
-    </Ticket>
+    </Postcard>
   )
 }
 
 /** The printed role. Fitted to the panel so no name or language ever gets cut off. */
 function RoleFace({ isSpy, location }: { isSpy: boolean; location: Location }): React.JSX.Element {
   const { box, content, headline, optional } = useFitText(
-    isSpy ? { max: 64, min: 24 } : { max: 52, min: 18, hasOptional: true },
+    isSpy ? { max: 40, min: 20, hasOptional: true } : { max: 36, min: 14 },
     [isSpy, location.name],
   )
 
-  return (
-    <div ref={box} className="absolute inset-0 flex items-center-safe justify-center-safe overflow-hidden bg-paper p-3">
-      {isSpy ? (
-        <div ref={content} className="flex max-w-full -rotate-6 flex-col items-center gap-2 text-center">
-          <p ref={headline} className="display rounded-xl border-[6px] border-double border-raffle px-4 py-1 text-raffle">
-            Void
-          </p>
-          <p className="max-w-[24ch] text-base leading-tight font-semibold">You're the spy. Fake it until you hear where everyone is.</p>
-        </div>
-      ) : (
-        <div ref={content} className="flex w-full min-w-0 flex-col items-center gap-2 text-center">
+  if (isSpy) {
+    return (
+      <div ref={box} className="halftone absolute inset-0 flex items-center-safe justify-center-safe overflow-hidden bg-yellow p-4">
+        <div ref={content} className="flex max-w-full flex-col items-center gap-3 text-center">
           <div ref={optional}>
-            {location.imageUrl ? (
-              <img src={location.imageUrl} alt="" className="size-24 rounded-xl border-[3px] border-ink object-cover" />
-            ) : (
-              <LocationIcon name={location.icon} className="size-16" strokeWidth={1.75} />
-            )}
+            <p className="display -rotate-3 text-[7rem] leading-[0.8] text-pink [text-shadow:4px_4px_0_var(--color-ink)]">?</p>
           </div>
-          <p className="print text-sm">Admit one to</p>
+          <p ref={headline} className="display">
+            Lost in the mail
+          </p>
+          <p className="max-w-[22ch] text-lg leading-tight font-semibold">You're the spy. Bluff until you work out where everyone is.</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="absolute inset-0 flex flex-col bg-card">
+      <div className="min-h-0 flex-1 border-b-[3px] border-ink">
+        <Scene location={location} className="size-full" />
+      </div>
+      {/* Fixed-height caption: the name shrinks to fit it, so the picture always keeps the rest. */}
+      <div ref={box} className="flex h-24 shrink-0 items-center-safe justify-center-safe overflow-hidden px-3">
+        <div ref={content} className="flex w-full min-w-0 flex-col items-center gap-0.5 text-center">
+          <p className="print text-[0.65rem]">Wish you were here</p>
           <p ref={headline} className="display [overflow-wrap:anywhere]">
             {location.name}
           </p>
         </div>
-      )}
+      </div>
     </div>
   )
 }

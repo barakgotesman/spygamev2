@@ -22,7 +22,7 @@ export function SettingsScreen(): React.JSX.Element {
         <IconButton label="Back" onClick={closeSettings}>
           <ArrowLeft aria-hidden strokeWidth={3} />
         </IconButton>
-        <h1 className="display text-5xl">Settings</h1>
+        <h1 className="display text-4xl">Settings</h1>
       </header>
 
       <div role="tablist" aria-label="Settings sections" className="grid grid-cols-2 gap-2">
@@ -33,8 +33,8 @@ export function SettingsScreen(): React.JSX.Element {
             type="button"
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
-            className={`display min-h-14 rounded-xl border-[3px] border-ink text-2xl transition-[transform,background-color] duration-150 active:scale-95 ${
-              tab === t.id ? 'bg-ink text-paper' : 'bg-paper text-ink'
+            className={`display min-h-14 rounded-xl border-[3px] border-ink text-2xl shadow-hard transition-[translate,box-shadow] duration-100 active:translate-x-1 active:translate-y-1 active:shadow-none ${
+              tab === t.id ? 'bg-pink text-ink' : 'bg-card text-ink'
             }`}
           >
             {t.label}

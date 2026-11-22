@@ -1,15 +1,15 @@
-/** Each seat gets its own ticket stock. Class names are written out so Tailwind keeps them. */
-const seatStocks = [
-  { name: 'tangerine', bg: 'bg-tangerine' },
-  { name: 'sky', bg: 'bg-sky' },
-  { name: 'bubblegum', bg: 'bg-bubblegum' },
-  { name: 'mint', bg: 'bg-mint' },
-  { name: 'canary', bg: 'bg-canary' },
-  { name: 'lilac', bg: 'bg-lilac' },
+/** Each seat gets its own ink. Class names are written out so Tailwind keeps them. */
+const seatInks = [
+  { bg: 'bg-pink', fg: 'text-ink' },
+  { bg: 'bg-blue', fg: 'text-paper' },
+  { bg: 'bg-yellow', fg: 'text-ink' },
+  { bg: 'bg-teal', fg: 'text-ink' },
+  { bg: 'bg-orange', fg: 'text-ink' },
+  { bg: 'bg-violet', fg: 'text-ink' },
 ] as const
 
-export function seatStock(seat: number): (typeof seatStocks)[number] {
-  return seatStocks[seat % seatStocks.length] ?? seatStocks[0]
+export function seatInk(seat: number): (typeof seatInks)[number] {
+  return seatInks[seat % seatInks.length] ?? seatInks[0]
 }
 
 /** "03" style serial for a seat. */

@@ -1,14 +1,21 @@
-import { Scissors, Settings } from 'lucide-react'
+import { Mail, Settings } from 'lucide-react'
 import { motion } from 'motion/react'
+import { Button } from '../../components/Button'
 import { Footer } from '../../components/Footer'
 import { IconButton } from '../../components/IconButton'
+import { Scene } from '../../components/Scene'
 import { ScreenShell } from '../../components/ScreenShell'
-import { Ticket } from '../../components/Ticket'
 import { MAX_PLAYERS, MIN_PLAYERS, maxSpies } from '../../lib/clampCounts'
-import { seatNumber, seatStock } from '../../lib/seatColors'
 import { useGameStore } from '../../store/useGameStore'
 import { useSettingsStore } from '../../store/useSettingsStore'
 import { Stepper } from './Stepper'
+
+/** Where the three teaser postcards sit in the fan: rotation, offset and resting z-order. */
+const fan = [
+  { rotate: -9, x: -78, y: 14, z: 'z-10' },
+  { rotate: 2, x: 0, y: 0, z: 'z-30' },
+  { rotate: 10, x: 78, y: 18, z: 'z-20' },
+] as const
 
 export function SetupScreen(): React.JSX.Element {
   const config = useGameStore((s) => s.config)
@@ -19,65 +26,74 @@ export function SetupScreen(): React.JSX.Element {
   const locations = useSettingsStore((s) => s.locations)
   const noLocations = locations.length === 0
 
+  // Spread the picks across the list so the teaser shows three different worlds.
+  const teaser = [0, Math.floor(locations.length / 2), locations.length - 1]
+    .map((i) => locations[i])
+    .filter((l, i, all) => l !== undefined && all.indexOf(l) === i)
+
   return (
-    <ScreenShell className="text-paper" footer={<Footer className="text-paper/80" />}>
+    <ScreenShell footer={<Footer className="opacity-70" />}>
       <header className="flex items-start justify-between gap-4 pt-2">
-        <h1 className="display -rotate-2 text-[3.4rem]">
-          Who's the
-          <br />
-          spy?
+        <h1 className="display text-[3.1rem]">
+          Who's the{' '}
+          <span className="relative inline-block -rotate-2 text-paper">
+            <span aria-hidden className="absolute -inset-x-2 inset-y-0.5 -z-10 -skew-x-6 rounded-md border-[3px] border-ink bg-pink shadow-hard" />
+            spy?
+          </span>
         </h1>
         <IconButton label="Settings" onClick={openSettings}>
           <Settings aria-hidden />
         </IconButton>
       </header>
 
-      <div className="mt-auto flex flex-col gap-5">
-      <ul className="flex flex-wrap gap-1.5" aria-label={`${config.players} tickets on the roll`}>
-        {Array.from({ length: config.players }, (_, seat) => (
-          <motion.li
-            key={seat}
-            initial={{ scale: 0, rotate: -20 }}
-            animate={{ scale: 1, rotate: seat % 2 ? 3 : -3 }}
-            transition={{ type: 'spring', stiffness: 500, damping: 22 }}
-            className={`display grid h-9 w-8 place-items-center rounded-[5px] text-sm text-ink ${seatStock(seat).bg}`}
-          >
-            {seatNumber(seat)}
-          </motion.li>
-        ))}
-      </ul>
+      <div className="relative mx-auto mt-3 flex h-40 w-full max-w-72 items-center justify-center" aria-hidden>
+        {teaser.map((loc, i) => {
+          const f = fan[i] ?? fan[0]
+          return (
+            <motion.div
+              key={loc?.id}
+              initial={{ y: 60, x: f.x, rotate: 0, opacity: 0 }}
+              animate={{ y: f.y, x: f.x, rotate: f.rotate, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 220, damping: 20, delay: 0.08 * i }}
+                            className={`absolute left-1/2 -ml-16 w-32 ${f.z}`}
+            >
+              <div className="overflow-hidden rounded-md border-[3px] border-ink bg-card p-1.5 shadow-hard">
+                {loc && <Scene location={loc} className="aspect-[4/3] w-full rounded-sm" />}
+              </div>
+            </motion.div>
+          )
+        })}
+      </div>
 
-      <Ticket className="bg-canary text-ink rotate-1">
-        <section aria-label="Round setup" className="flex flex-col gap-5 px-6 pt-6 pb-8">
+      <div className="mt-auto flex flex-col gap-6">
+        <section aria-label="Round setup" className="flex flex-col gap-5 rounded-2xl border-[3px] border-ink bg-card p-5 shadow-hard-lg">
           <Stepper
             label="Players"
+            hint="pass the phone"
             value={config.players}
             onChange={(d) => changePlayers(d)}
             canDecrease={config.players > MIN_PLAYERS}
             canIncrease={config.players < MAX_PLAYERS}
           />
+          <hr className="border-t-[3px] border-dashed border-ink/30" />
           <Stepper
-            label="Spies"
+            label={config.spies === 1 ? 'Spy' : 'Spies'}
+            hint="in the dark"
             value={config.spies}
             onChange={(d) => changeSpies(d)}
             canDecrease={config.spies > 1}
             canIncrease={config.spies < maxSpies(config.players)}
           />
         </section>
-        <button
-          type="button"
-          disabled={noLocations}
-          onClick={() => startGame(locations)}
-          className="display flex h-[var(--stub)] w-full items-center justify-center gap-3 bg-ink text-3xl text-canary transition-[filter] duration-150 hover:brightness-125 active:brightness-90 disabled:opacity-40"
-        >
-          <Scissors className="size-7 -rotate-90" strokeWidth={2.5} aria-hidden />
-          Tear to start
-        </button>
-      </Ticket>
+
+        <Button variant="pink" disabled={noLocations} onClick={() => startGame(locations)} className="display min-h-[4.5rem] text-2xl font-normal">
+          <Mail className="size-7" strokeWidth={2.5} aria-hidden />
+          Deal the postcards
+        </Button>
       </div>
 
       {noLocations && (
-        <p className="rounded-xl bg-ink p-3 text-center text-paper" role="alert">
+        <p className="rounded-xl border-[3px] border-ink bg-yellow p-3 text-center font-semibold" role="alert">
           No locations left. Add one in settings to play.
         </p>
       )}

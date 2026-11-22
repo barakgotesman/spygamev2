@@ -1,7 +1,7 @@
 import { Pause, Play } from 'lucide-react'
 import { useEffect } from 'react'
+import { Button } from '../../components/Button'
 import { Digits } from '../../components/Digits'
-import { Ticket } from '../../components/Ticket'
 import { useNow } from '../../hooks/useNow'
 import { formatTime } from '../../lib/formatTime'
 import { vibrate } from '../../lib/vibrate'
@@ -36,40 +36,46 @@ export function Timer(): React.JSX.Element {
 
   const finished = timer.status === 'finished'
   const urgent = timer.status === 'running' && remainingMs <= 30_000
+  const left = Math.max(0, Math.min(1, remainingMs / durationMs))
 
   const action =
     timer.status === 'idle'
-      ? { label: 'Punch in', icon: <Play className="size-7" strokeWidth={2.5} aria-hidden />, run: () => startTimer(durationMs) }
+      ? { label: 'Start the clock', icon: <Play className="size-6" strokeWidth={2.5} aria-hidden />, run: () => startTimer(durationMs) }
       : timer.status === 'running'
-        ? { label: 'Pause', icon: <Pause className="size-7" strokeWidth={2.5} aria-hidden />, run: pauseTimer }
+        ? { label: 'Pause', icon: <Pause className="size-6" strokeWidth={2.5} aria-hidden />, run: pauseTimer }
         : timer.status === 'paused'
-          ? { label: 'Resume', icon: <Play className="size-7" strokeWidth={2.5} aria-hidden />, run: resumeTimer }
+          ? { label: 'Resume', icon: <Play className="size-6" strokeWidth={2.5} aria-hidden />, run: resumeTimer }
           : null
 
   return (
-    <Ticket
-      className={`${finished || urgent ? 'bg-raffle text-paper' : 'bg-bubblegum text-ink'} ${urgent ? 'motion-safe:animate-wiggle' : '-rotate-1'} transition-colors duration-300 [--stub:5rem]`}
+    <section
+      aria-label="Round timer"
+      className={`flex flex-col gap-4 rounded-2xl border-[3px] border-ink p-4 shadow-hard-lg transition-colors duration-300 ${
+        finished || urgent ? 'bg-pink text-ink' : 'bg-blue text-paper'
+      } ${urgent ? 'motion-safe:animate-wiggle' : ''}`}
     >
-      <div className="flex flex-col items-center gap-1 px-4 pt-5 pb-6">
-        <p className="print text-sm">{finished ? 'Expired' : 'Valid for'}</p>
+      <div className="flex flex-col items-center gap-1 pt-1">
+        <p className="print text-sm">{finished ? 'Time is up' : 'Time left'}</p>
         <div role="timer" aria-live="off">
-          <Digits text={formatTime(remainingMs)} className="text-[6.5rem] leading-none" />
+          <Digits text={formatTime(remainingMs)} className="text-[6rem] leading-none [text-shadow:4px_4px_0_var(--color-ink)]" />
         </div>
       </div>
+
+      {/* The airmail stripe drains as the round runs out. */}
+      <div className="h-4 overflow-hidden rounded-full border-[3px] border-ink bg-card" aria-hidden>
+        <div className="airmail h-full w-full origin-left transition-transform duration-1000 ease-linear" style={{ transform: `scaleX(${left})` }} />
+      </div>
+
       {action ? (
-        <button
-          type="button"
-          onClick={action.run}
-          className="display flex h-[var(--stub)] w-full items-center justify-center gap-3 bg-ink text-3xl text-paper transition-[filter] duration-150 hover:brightness-125 active:brightness-90"
-        >
+        <Button variant="paper" className="min-h-16 text-xl" onClick={action.run}>
           {action.icon}
           {action.label}
-        </button>
+        </Button>
       ) : (
-        <p role="status" className="display grid h-[var(--stub)] place-items-center bg-ink text-3xl text-paper">
-          Time's up
+        <p role="status" className="display grid min-h-16 place-items-center rounded-xl border-[3px] border-ink bg-card text-3xl">
+          Vote now!
         </p>
       )}
-    </Ticket>
+    </section>
   )
 }
