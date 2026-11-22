@@ -46,6 +46,8 @@
   body {
     @apply font-sans text-ink antialiased;
     min-height: 100dvh;
+    /* rotated/offset decoration must never widen the page; clip (unlike hidden) keeps sticky headers working */
+    overflow-x: clip;
     background-color: var(--color-paper);
     overscroll-behavior-y: none;
     /* uncoated-paper tooth, one static layer */

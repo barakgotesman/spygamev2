@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 import type { Location } from '../types/game'
 import { Scene } from './Scene'
 
-/** Where each postcard in the fan sits: rotation, offset (in card-widths of 1/2 unit) and resting z-order. */
+/** Where each postcard in the fan sits: rotation, offset (as a fraction of the card width) and resting z-order. */
 const fan = [
   { rotate: -9, x: -0.6, y: 14, z: 'z-10' },
   { rotate: 2, x: 0, y: 0, z: 'z-30' },
@@ -10,8 +10,8 @@ const fan = [
 ] as const
 
 const sizes = {
-  sm: { box: 'h-40 max-w-72', card: 'w-32 -ms-16', width: 128 },
-  lg: { box: 'h-64 max-w-md', card: 'w-48 -ms-24', width: 192 },
+  sm: { box: 'h-40 max-w-72', card: 'w-32 -ms-16' },
+  lg: { box: 'h-64 max-w-md', card: 'w-32 -ms-16 sm:w-48 sm:-ms-24' },
 } as const
 
 type PostcardFanProps = { locations: readonly (Location | undefined)[]; size?: keyof typeof sizes }
@@ -24,10 +24,11 @@ export function PostcardFan({ locations, size = 'sm' }: PostcardFanProps): React
     .filter((l, i, all) => l !== undefined && all.indexOf(l) === i)
 
   return (
-    <div className={`relative mx-auto flex w-full items-center justify-center ${s.box}`} aria-hidden>
+    <div className={`relative mx-auto flex w-full items-center overflow-x-clip justify-center ${s.box}`} aria-hidden>
       {picks.map((loc, i) => {
         const f = fan[i] ?? fan[0]
-        const x = f.x * s.width
+        // Percent of the card's own width, so the spread shrinks with the card on narrow screens.
+        const x = `${f.x * 100}%`
         return (
           <motion.div
             key={loc?.id}
