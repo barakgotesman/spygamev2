@@ -242,6 +242,7 @@ export const he: Messages = {
     play: 'לשחק במקום',
   },
   footer: {
+    navAria: 'תחתית האתר',
     builtBy: 'פותח על ידי',
     author: 'ברק גוטסמן',
   },

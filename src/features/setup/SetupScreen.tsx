@@ -1,7 +1,7 @@
 import { Mail, Settings } from 'lucide-react'
 import { Link } from 'react-router'
 import { Button } from '../../components/Button'
-import { Footer } from '../../components/Footer'
+import { CreditStamp } from '../../components/CreditStamp'
 import { IconButton } from '../../components/IconButton'
 import { LanguageToggle } from '../../components/LanguageToggle'
 import { PostcardFan } from '../../components/PostcardFan'
@@ -35,7 +35,7 @@ export function SetupScreen(): React.JSX.Element {
               {m.setup.howToPlayLink}
             </Link>
           </nav>
-          <Footer className="-mt-3 opacity-70" />
+          <CreditStamp className="pb-3" />
         </>
       }
     >

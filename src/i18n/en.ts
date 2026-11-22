@@ -238,6 +238,7 @@ export const en = {
     play: 'Play instead',
   },
   footer: {
+    navAria: 'Footer',
     builtBy: 'Built by',
     author: 'Barak Gotesman',
   },

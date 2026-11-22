@@ -6,7 +6,7 @@ type SectionProps = { title: string; children: ReactNode; className?: string; id
 export function Section({ title, children, className = '', id }: SectionProps): React.JSX.Element {
   const headingId = `${id ?? title.replace(/\W+/gu, '-')}-heading`
   return (
-    <section aria-labelledby={headingId} className={`flex flex-col gap-6 ${className}`}>
+    <section data-section id={id} aria-labelledby={headingId} className={`flex flex-col gap-6 ${className}`}>
       <h2 id={headingId} className="display text-3xl sm:text-4xl">
         {title}
       </h2>
