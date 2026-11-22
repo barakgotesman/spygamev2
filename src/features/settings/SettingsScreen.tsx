@@ -2,30 +2,32 @@ import { ArrowLeft } from 'lucide-react'
 import { useState } from 'react'
 import { IconButton } from '../../components/IconButton'
 import { ScreenShell } from '../../components/ScreenShell'
+import { useI18n } from '../../i18n/useI18n'
 import { useGameStore } from '../../store/useGameStore'
 import { LocationsTab } from './LocationsTab'
 import { TimerTab } from './TimerTab'
 
 type Tab = 'locations' | 'timer'
-const tabs: { id: Tab; label: string }[] = [
-  { id: 'locations', label: 'Locations' },
-  { id: 'timer', label: 'Timer' },
-]
 
 export function SettingsScreen(): React.JSX.Element {
+  const { m } = useI18n()
+  const tabs: { id: Tab; label: string }[] = [
+    { id: 'locations', label: m.settings.tabLocations },
+    { id: 'timer', label: m.settings.tabTimer },
+  ]
   const closeSettings = useGameStore((s) => s.closeSettings)
   const [tab, setTab] = useState<Tab>('locations')
 
   return (
     <ScreenShell>
       <header className="flex items-center gap-4 pt-2">
-        <IconButton label="Back" onClick={closeSettings}>
-          <ArrowLeft aria-hidden strokeWidth={3} />
+        <IconButton label={m.settings.back} onClick={closeSettings}>
+          <ArrowLeft className="rtl:-scale-x-100" aria-hidden strokeWidth={3} />
         </IconButton>
-        <h1 className="display text-4xl">Settings</h1>
+        <h1 className="display text-4xl">{m.settings.title}</h1>
       </header>
 
-      <div role="tablist" aria-label="Settings sections" className="grid grid-cols-2 gap-2">
+      <div role="tablist" aria-label={m.settings.sectionsAria} className="grid grid-cols-2 gap-2">
         {tabs.map((t) => (
           <button
             key={t.id}

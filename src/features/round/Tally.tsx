@@ -1,12 +1,14 @@
 import { motion } from 'motion/react'
+import { useI18n } from '../../i18n/useI18n'
 
 /** Tally marks in groups of five (four strokes and a slash), drawn on as they are added. */
 export function Tally({ count }: { count: number }): React.JSX.Element {
+  const { m } = useI18n()
   const groups = Math.floor(count / 5)
   const rest = count % 5
 
   return (
-    <span className="flex min-h-9 flex-wrap items-center gap-x-2" role="img" aria-label={`${count} votes`}>
+    <span className="flex min-h-9 flex-wrap items-center gap-x-2" role="img" aria-label={m.round.votes(count)}>
       {Array.from({ length: groups }, (_, g) => (
         <svg key={g} viewBox="0 0 30 30" className="size-9 overflow-visible" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round">
           {[5, 12, 19, 26].map((x) => (

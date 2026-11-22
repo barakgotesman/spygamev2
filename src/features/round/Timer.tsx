@@ -3,12 +3,14 @@ import { useEffect } from 'react'
 import { Button } from '../../components/Button'
 import { Digits } from '../../components/Digits'
 import { useNow } from '../../hooks/useNow'
+import { useI18n } from '../../i18n/useI18n'
 import { formatTime } from '../../lib/formatTime'
 import { vibrate } from '../../lib/vibrate'
 import { useGameStore } from '../../store/useGameStore'
 import { useSettingsStore } from '../../store/useSettingsStore'
 
 export function Timer(): React.JSX.Element {
+  const { m } = useI18n()
   const timer = useGameStore((s) => s.timer)
   const startTimer = useGameStore((s) => s.startTimer)
   const pauseTimer = useGameStore((s) => s.pauseTimer)
@@ -40,30 +42,30 @@ export function Timer(): React.JSX.Element {
 
   const action =
     timer.status === 'idle'
-      ? { label: 'Start the clock', icon: <Play className="size-6" strokeWidth={2.5} aria-hidden />, run: () => startTimer(durationMs) }
+      ? { label: m.round.startClock, icon: <Play className="size-6" strokeWidth={2.5} aria-hidden />, run: () => startTimer(durationMs) }
       : timer.status === 'running'
-        ? { label: 'Pause', icon: <Pause className="size-6" strokeWidth={2.5} aria-hidden />, run: pauseTimer }
+        ? { label: m.round.pause, icon: <Pause className="size-6" strokeWidth={2.5} aria-hidden />, run: pauseTimer }
         : timer.status === 'paused'
-          ? { label: 'Resume', icon: <Play className="size-6" strokeWidth={2.5} aria-hidden />, run: resumeTimer }
+          ? { label: m.round.resume, icon: <Play className="size-6" strokeWidth={2.5} aria-hidden />, run: resumeTimer }
           : null
 
   return (
     <section
-      aria-label="Round timer"
+      aria-label={m.round.timerAria}
       className={`flex flex-col gap-4 rounded-2xl border-[3px] border-ink p-4 shadow-hard-lg transition-colors duration-300 ${
         finished || urgent ? 'bg-pink text-ink' : 'bg-blue text-paper'
       } ${urgent ? 'motion-safe:animate-wiggle' : ''}`}
     >
       <div className="flex flex-col items-center gap-1 pt-1">
-        <p className="print text-sm">{finished ? 'Time is up' : 'Time left'}</p>
-        <div role="timer" aria-live="off">
+        <p className="print text-sm">{finished ? m.round.timeUp : m.round.timeLeft}</p>
+        <div role="timer" aria-live="off" dir="ltr">
           <Digits text={formatTime(remainingMs)} className="text-[6rem] leading-none [text-shadow:4px_4px_0_var(--color-ink)]" />
         </div>
       </div>
 
       {/* The airmail stripe drains as the round runs out. */}
       <div className="h-4 overflow-hidden rounded-full border-[3px] border-ink bg-card" aria-hidden>
-        <div className="airmail h-full w-full origin-left transition-transform duration-1000 ease-linear" style={{ transform: `scaleX(${left})` }} />
+        <div className="airmail h-full w-full origin-left transition-transform rtl:origin-right duration-1000 ease-linear" style={{ transform: `scaleX(${left})` }} />
       </div>
 
       {action ? (
@@ -73,7 +75,7 @@ export function Timer(): React.JSX.Element {
         </Button>
       ) : (
         <p role="status" className="display grid min-h-16 place-items-center rounded-xl border-[3px] border-ink bg-card text-3xl">
-          Vote now!
+          {m.round.voteNow}
         </p>
       )}
     </section>

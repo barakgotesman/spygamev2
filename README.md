@@ -2,20 +2,20 @@
 
 A pass-the-phone party game inspired by Spyfall. Everyone secretly learns the same location, except the spy. Ask each other questions, vote, and find the spy before the timer runs out.
 
-One phone, no accounts, no install. It works in any modern mobile browser.
+One phone, no accounts, no install. It works in any modern mobile browser, in **English and Hebrew** (right-to-left). The language follows your browser on first launch, and there's a one-tap switch on the first screen.
 
 > Originally an Angular 10 app I built in 2020. Rebuilt from scratch with React, Vite, TypeScript and Tailwind.
 
 ## How to play
 
-1. **Set up the round.** Pick the number of players (2-20) and spies. Tap **Tear to start**.
-2. **Pass the phone.** Each player takes a turn holding the silver foil on their numbered ticket:
-   - Everyone but the spy sees their ticket **"Admit one to ..."** a location, such as Casino or Pub.
-   - The spy's ticket is stamped **VOID**, so they don't know where everyone is.
-   - Let go and the ticket covers itself again, so nobody can peek over a shoulder.
+1. **Set up the round.** Pick the number of players (2-20) and spies. Tap **Deal the postcards**.
+2. **Pass the phone.** Each player takes a turn holding the sealed flap of their postcard:
+   - Everyone but the spy sees an illustrated postcard of the location, such as the Casino or the Pub.
+   - The spy's postcard was **lost in the mail**, so they don't know where everyone is.
+   - Let go and the postcard seals itself again, so nobody can peek over a shoulder.
 3. **Play the round.** Start the timer (7 minutes by default) and ask each other questions about the location. The spy must bluff; everyone else must prove they know the place without giving it away.
-4. **Vote.** Add a tally mark for whoever you think the spy is. You have one vote slip per player.
-5. **Reveal.** See who the spy was, and what the location was.
+4. **Vote.** Add a tally mark for whoever you think the spy is. You have one ballot per player.
+5. **Reveal.** The real postcard turns up with the spy's seat stamped on it.
 
 You can edit the locations (add your own, with an optional image URL) and the round length in **Settings**. Both are saved on your device.
 
@@ -41,18 +41,19 @@ Open the address Vite prints (usually `http://localhost:5173`).
 
 ## Built with
 
-React 19, Vite, TypeScript (strict), Tailwind CSS v4, Zustand, motion, and lucide-react. Tests run on Vitest. Fonts (Ultra, Bricolage Grotesque, Courier Prime) are self-hosted, and there are no external requests.
+React 19, Vite, TypeScript (strict), Tailwind CSS v4, Zustand, motion, and lucide-react. Tests run on Vitest. Fonts (Bagel Fat One, Familjen Grotesk, Courier Prime, plus Secular One and Heebo for Hebrew) are self-hosted, and there are no external requests.
 
 ## Project layout
 
 ```
 src/
   features/   setup, reveal, round and settings screens
-  components/ shared UI (Ticket, Button, ConfirmDialog, ...)
+  components/ shared UI (Postcard, Scene, Button, ConfirmDialog, ...)
   store/      Zustand stores (game state, saved settings)
   lib/        pure, unit-tested game logic
   hooks/      wake lock, timer clock, text fitting
   data/       default locations
+  i18n/       English and Hebrew copy, typed so both stay in sync
 ```
 
 Architecture notes and coding conventions live in [CLAUDE.md](CLAUDE.md).

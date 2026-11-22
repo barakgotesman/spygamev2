@@ -47,6 +47,13 @@ Spies do not know each other. Default locations live in `src/data/defaultLocatio
 Avoid: near-black + neon, condensed all-caps display, generic rounded dark cards, saturated flat floods with ticket/stub shapes (the previous design). Role text must always fit (`useFitText`); test long names at 320x568.
 Use these skills when working on UI: `impeccable`, `mobile-native`, `emil-design-eng`, `animate`, `break-ui` (stress-test worst-case data), `vercel:react-best-practices` (review).
 
+## i18n (English + Hebrew, RTL)
+- Copy lives in `src/i18n/en.ts` (source of truth) and `he.ts` (typed `Messages`, so a missing key fails `npm run typecheck`). No hard-coded UI strings or aria-labels in components: `const { m } = useI18n()`.
+- Counted strings go through `plural()` in `lib/plural.ts` (Hebrew has a dual). Hebrew copy is gender-neutral (infinitives, plural address, "מרגל/ית").
+- Language: `useLocaleStore` (persisted, auto-detected from the browser on first launch), toggle in the Setup header. `App.tsx` sets `<html lang dir>`.
+- Default location names are translated by location id in `useI18n.ts`; custom names stay as typed. Print names inside `<bdi>`.
+- RTL: logical utilities only (`ms-/me-/ps-/pe-/start-/end-`), never `ml-/mr-/left-/right-`. Mirror direction icons with `rtl:-scale-x-100`. Keep numerals, the clock and each -/+ pair `dir="ltr"`. Hebrew falls back through the font stacks (Secular One, Heebo); `.print` labels use Heebo in Hebrew.
+
 ## Git
 Remote `origin` is https://github.com/barakgotesman/spygamev2.git. Never push, force-push or open PRs without asking.
 Small focused commits with imperative messages.

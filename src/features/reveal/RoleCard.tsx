@@ -4,6 +4,7 @@ import { useState, type KeyboardEvent } from 'react'
 import { Postcard } from '../../components/Postcard'
 import { Scene } from '../../components/Scene'
 import { useFitText } from '../../hooks/useFitText'
+import { useI18n } from '../../i18n/useI18n'
 import { seatInk, seatNumber } from '../../lib/seatColors'
 import { vibrate } from '../../lib/vibrate'
 import type { Location } from '../../types/game'
@@ -21,6 +22,7 @@ type RoleCardProps = {
  * The role is only in the DOM while held, so it can never linger for the next player.
  */
 export function RoleCard({ seat, total, isSpy, location, onSeen }: RoleCardProps): React.JSX.Element {
+  const { m } = useI18n()
   const [shown, setShown] = useState(false)
   const ink = seatInk(seat)
 
@@ -44,12 +46,13 @@ export function RoleCard({ seat, total, isSpy, location, onSeen }: RoleCardProps
     <Postcard className="h-full min-h-[max(21rem,min(36rem,calc(100dvh-13rem)))]">
       <div className="flex items-start justify-between gap-3 px-4 pt-3">
         <div>
-          <p className="print text-sm">Post card</p>
+          <p className="print text-sm">{m.reveal.postCard}</p>
           <p className="print text-[0.7rem] opacity-60">
-            {seat + 1} of {total}
+            {m.reveal.ofTotal(seat + 1, total)}
           </p>
         </div>
         <p
+          dir="ltr"
           className={`display grid size-14 place-items-center border-[3px] border-dashed border-ink text-2xl ${ink.bg} ${ink.fg}`}
           aria-hidden
         >
@@ -59,7 +62,7 @@ export function RoleCard({ seat, total, isSpy, location, onSeen }: RoleCardProps
 
       <button
         type="button"
-        aria-label={`Hold to read the postcard of player ${seat + 1}`}
+        aria-label={m.reveal.holdAria(seat + 1)}
         onPointerDown={show}
         onPointerUp={hide}
         onPointerCancel={hide}
@@ -83,14 +86,14 @@ export function RoleCard({ seat, total, isSpy, location, onSeen }: RoleCardProps
             <span className={`grid size-20 -rotate-6 place-items-center rounded-full border-[3px] border-ink shadow-hard ${ink.bg} ${ink.fg}`}>
               <Hand className="size-9" strokeWidth={2.25} />
             </span>
-            <p className="display text-center text-2xl">Hold to read it</p>
-            <p className="print text-[0.65rem]">sealed · eyes only</p>
+            <p className="display text-center text-2xl">{m.reveal.holdToRead}</p>
+            <p className="print text-[0.65rem]">{m.reveal.sealed}</p>
           </div>
         </motion.div>
       </button>
 
       <div className="mx-4 mb-4 flex flex-col gap-2.5" aria-hidden>
-        <p className="print text-[0.7rem]">To: player {seatNumber(seat)}</p>
+        <p className="print text-[0.7rem]">{m.reveal.to(seatNumber(seat))}</p>
         <div className="h-px bg-ink/40" />
         <div className="h-px bg-ink/40" />
       </div>
@@ -100,6 +103,7 @@ export function RoleCard({ seat, total, isSpy, location, onSeen }: RoleCardProps
 
 /** The printed role. Fitted to the panel so no name or language ever gets cut off. */
 function RoleFace({ isSpy, location }: { isSpy: boolean; location: Location }): React.JSX.Element {
+  const { m, locationName } = useI18n()
   const { box, content, headline, optional } = useFitText(
     isSpy ? { max: 40, min: 20, hasOptional: true } : { max: 36, min: 14 },
     [isSpy, location.name],
@@ -113,9 +117,9 @@ function RoleFace({ isSpy, location }: { isSpy: boolean; location: Location }): 
             <p className="display -rotate-3 text-[7rem] leading-[0.8] text-pink [text-shadow:4px_4px_0_var(--color-ink)]">?</p>
           </div>
           <p ref={headline} className="display">
-            Lost in the mail
+            {m.reveal.lostInMail}
           </p>
-          <p className="max-w-[22ch] text-lg leading-tight font-semibold">You're the spy. Bluff until you work out where everyone is.</p>
+          <p className="max-w-[22ch] text-lg leading-tight font-semibold">{m.reveal.spyLine}</p>
         </div>
       </div>
     )
@@ -129,9 +133,9 @@ function RoleFace({ isSpy, location }: { isSpy: boolean; location: Location }): 
       {/* Fixed-height caption: the name shrinks to fit it, so the picture always keeps the rest. */}
       <div ref={box} className="flex h-24 shrink-0 items-center-safe justify-center-safe overflow-hidden px-3">
         <div ref={content} className="flex w-full min-w-0 flex-col items-center gap-0.5 text-center">
-          <p className="print text-[0.65rem]">Wish you were here</p>
+          <p className="print text-[0.65rem]">{m.common.wishYouWereHere}</p>
           <p ref={headline} className="display [overflow-wrap:anywhere]">
-            {location.name}
+            <bdi>{locationName(location)}</bdi>
           </p>
         </div>
       </div>

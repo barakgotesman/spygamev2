@@ -2,6 +2,9 @@
 @import '@fontsource-variable/familjen-grotesk/wght.css';
 @import '@fontsource/courier-prime/latin-400';
 @import '@fontsource/courier-prime/latin-700';
+/* Hebrew glyphs: the Latin faces above have none, so the browser falls through the stacks per character. */
+@import '@fontsource/secular-one/hebrew-400.css';
+@import '@fontsource-variable/heebo/wght.css';
 @import 'tailwindcss';
 
 /*
@@ -9,8 +12,8 @@
  * Every location is a postcard illustration; the game is passing postcards around.
  */
 @theme {
-  --font-sans: 'Familjen Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Bagel Fat One', 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --font-sans: 'Familjen Grotesk Variable', 'Heebo Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Bagel Fat One', 'Secular One', 'Arial Rounded MT Bold', system-ui, sans-serif;
   --font-print: 'Courier Prime', 'Courier New', monospace;
 
   --color-ink: oklch(0.25 0.07 285);
@@ -113,4 +116,10 @@
 @utility halftone {
   background-image: radial-gradient(color-mix(in oklch, var(--color-ink) 30%, transparent) 1.4px, transparent 1.6px);
   background-size: 8px 8px;
+}
+
+/* A monospace face and wide tracking pull Hebrew letters apart; print labels use the proportional Hebrew face instead. */
+:lang(he) .print {
+  font-family: var(--font-sans);
+  letter-spacing: 0;
 }
