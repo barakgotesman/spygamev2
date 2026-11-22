@@ -17,3 +17,10 @@ export function roundOutcome(votes: readonly number[], spySeats: readonly number
   const accused = new Set(ranked.slice(0, cut).map((r) => r.seat))
   return spySeats.every((seat) => accused.has(seat)) ? 'caught' : 'escaped'
 }
+
+/** Seats the table pointed at: the top `count` seats by votes, including ties at the cut-off, never a seat with no votes. */
+export function accusedSeats(votes: readonly number[], count: number): number[] {
+  const sorted = [...votes].sort((a, b) => b - a)
+  const threshold = Math.max(1, sorted[count - 1] ?? 1)
+  return votes.flatMap((v, seat) => (v >= threshold ? [seat] : []))
+}

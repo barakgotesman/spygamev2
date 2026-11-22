@@ -5,6 +5,7 @@ import { Button } from '../../components/Button'
 import { ConfirmDialog } from '../../components/ConfirmDialog'
 import { IconButton } from '../../components/IconButton'
 import { ScreenShell } from '../../components/ScreenShell'
+import { usePlayerName } from '../../hooks/usePlayerName'
 import { useI18n } from '../../i18n/useI18n'
 import { seatInk } from '../../lib/seatColors'
 import { useGameStore } from '../../store/useGameStore'
@@ -12,6 +13,7 @@ import { RoleCard } from './RoleCard'
 
 export function RevealScreen(): React.JSX.Element | null {
   const { m } = useI18n()
+  const label = usePlayerName()
   const round = useGameStore((s) => s.round)
   const seat = useGameStore((s) => s.revealSeat)
   const nextReveal = useGameStore((s) => s.nextReveal)
@@ -27,7 +29,7 @@ export function RevealScreen(): React.JSX.Element | null {
   return (
     <ScreenShell>
       <header className="flex items-center justify-between gap-4 pt-2">
-        <h1 className={`display -rotate-1 rounded-lg border-[3px] border-ink px-4 py-2 text-3xl shadow-hard ${ink.bg} ${ink.fg}`}>{m.common.player(seat + 1)}</h1>
+        <h1 className={`display min-w-0 -rotate-1 rounded-lg border-[3px] border-ink px-4 py-2 text-3xl [overflow-wrap:anywhere] shadow-hard ${ink.bg} ${ink.fg}`}><bdi>{label(seat)}</bdi></h1>
         <IconButton label={m.common.cancelGame} onClick={() => setConfirmCancel(true)}>
           <X aria-hidden />
         </IconButton>
@@ -56,7 +58,7 @@ export function RevealScreen(): React.JSX.Element | null {
 
       <Button variant="ink" className="min-h-16 text-lg" disabled={!seen} onClick={nextReveal}>
         <Send className="size-5 rtl:-scale-x-100" strokeWidth={2.5} aria-hidden />
-        {isLast ? m.reveal.startRound : m.reveal.pass(seat + 2)}
+        {isLast ? m.reveal.startRound : m.reveal.pass(label(seat + 1))}
       </Button>
       <ConfirmDialog
         open={confirmCancel}

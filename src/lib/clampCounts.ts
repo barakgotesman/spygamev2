@@ -1,6 +1,6 @@
 import type { RoundConfig } from '../types/game'
 
-export const MIN_PLAYERS = 2
+export const MIN_PLAYERS = 3
 export const MAX_PLAYERS = 20
 
 /** Spies must stay below the player count so at least one civilian remains. */

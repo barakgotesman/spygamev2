@@ -10,6 +10,7 @@ import { useI18n } from '../../i18n/useI18n'
 import { MAX_PLAYERS, MIN_PLAYERS, maxSpies } from '../../lib/clampCounts'
 import { useGameStore } from '../../store/useGameStore'
 import { useSettingsStore } from '../../store/useSettingsStore'
+import { PlayerNames } from './PlayerNames'
 import { Stepper } from './Stepper'
 
 export function SetupScreen(): React.JSX.Element {
@@ -83,6 +84,8 @@ export function SetupScreen(): React.JSX.Element {
             canDecrease={config.spies > 1}
             canIncrease={config.spies < maxSpies(config.players)}
           />
+          <hr className="border-t-[3px] border-dashed border-ink/30" />
+          <PlayerNames />
         </section>
 
         <Button variant="pink" disabled={noLocations} onClick={() => startGame(locations)} className="display min-h-[4.5rem] text-2xl font-normal">

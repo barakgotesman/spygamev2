@@ -4,6 +4,7 @@ import { useState, type KeyboardEvent } from 'react'
 import { Postcard } from '../../components/Postcard'
 import { Scene } from '../../components/Scene'
 import { useFitText } from '../../hooks/useFitText'
+import { usePlayerName } from '../../hooks/usePlayerName'
 import { useI18n } from '../../i18n/useI18n'
 import { seatInk, seatNumber } from '../../lib/seatColors'
 import { vibrate } from '../../lib/vibrate'
@@ -23,6 +24,7 @@ type RoleCardProps = {
  */
 export function RoleCard({ seat, total, isSpy, location, onSeen }: RoleCardProps): React.JSX.Element {
   const { m } = useI18n()
+  const label = usePlayerName()
   const [shown, setShown] = useState(false)
   const ink = seatInk(seat)
 
@@ -62,7 +64,7 @@ export function RoleCard({ seat, total, isSpy, location, onSeen }: RoleCardProps
 
       <button
         type="button"
-        aria-label={m.reveal.holdAria(seat + 1)}
+        aria-label={m.reveal.holdAria(label(seat))}
         onPointerDown={show}
         onPointerUp={hide}
         onPointerCancel={hide}
@@ -93,7 +95,7 @@ export function RoleCard({ seat, total, isSpy, location, onSeen }: RoleCardProps
       </button>
 
       <div className="mx-4 mb-4 flex flex-col gap-2.5" aria-hidden>
-        <p className="print text-[0.7rem]">{m.reveal.to(seatNumber(seat))}</p>
+        <p className="print text-[0.7rem] [overflow-wrap:anywhere]">{m.reveal.to(label(seat))}</p>
         <div className="h-px bg-ink/40" />
         <div className="h-px bg-ink/40" />
       </div>

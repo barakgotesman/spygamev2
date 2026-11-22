@@ -19,7 +19,7 @@ One-device, zero-install, instant: the phone itself is the secret-keeper. The me
 Pass-the-phone ritual: each player looks privately at their role, then the phone goes to the next person. Then a shared countdown (default 7 min) and a vote. Locations are a user-editable list stored on the device.
 
 ## Capabilities and Constraints
-- Players 2-20, spies 1..players-1, round length 1-60 min, editable locations (name + optional image URL), device-local storage.
+- Players 3-20, spies 1..players-1, round length 1-60 min, editable locations (name + optional image URL), device-local storage.
 - Tech: React 19, Vite, TypeScript strict, Tailwind v4, Zustand, motion. No backend. See CLAUDE.md.
 - Roles must never linger on screen (hold-to-reveal, instant hide).
 - Author's name and LinkedIn link in the footer (Barak Gotesman).

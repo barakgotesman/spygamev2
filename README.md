@@ -8,7 +8,7 @@ One phone, no accounts, no install. It works in any modern mobile browser, in **
 
 ## How to play
 
-1. **Set up the round.** Pick the number of players (2-20) and spies. Tap **Deal the postcards**.
+1. **Set up the round.** Pick the number of players (3-20) and spies. Tap **Deal the postcards**.
 2. **Pass the phone.** Each player takes a turn holding the sealed flap of their postcard:
    - Everyone but the spy sees an illustrated postcard of the location, such as the Casino or the Pub.
    - The spy's postcard was **lost in the mail**, so they don't know where everyone is.

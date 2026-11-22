@@ -1,6 +1,6 @@
 import { defaultLocations } from '../data/defaultLocations'
 import { createRound } from './assignRoles'
-import { MAX_PLAYERS, setPlayers, setSpies } from './clampCounts'
+import { MAX_PLAYERS, MIN_PLAYERS, setPlayers, setSpies } from './clampCounts'
 import { formatTime } from './formatTime'
 import { shuffle } from './shuffle'
 
@@ -32,8 +32,8 @@ describe('clampCounts', () => {
     expect(setPlayers({ players: 5, spies: 4 }, 3)).toEqual({ players: 3, spies: 2 })
   })
   it('bounds players', () => {
-    expect(setPlayers({ players: 2, spies: 1 }, 1).players).toBe(2)
-    expect(setPlayers({ players: 2, spies: 1 }, 99).players).toBe(MAX_PLAYERS)
+    expect(setPlayers({ players: 3, spies: 1 }, 1).players).toBe(MIN_PLAYERS)
+    expect(setPlayers({ players: 3, spies: 1 }, 99).players).toBe(MAX_PLAYERS)
   })
   it('keeps at least one civilian and one spy', () => {
     expect(setSpies({ players: 4, spies: 1 }, 9).spies).toBe(3)

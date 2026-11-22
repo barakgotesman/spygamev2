@@ -2,8 +2,9 @@ import { motion } from 'motion/react'
 import { Button } from '../../components/Button'
 import { Postcard } from '../../components/Postcard'
 import { Scene } from '../../components/Scene'
+import { usePlayerName } from '../../hooks/usePlayerName'
 import { useI18n } from '../../i18n/useI18n'
-import { roundOutcome, type Outcome } from '../../lib/outcome'
+import { accusedSeats, roundOutcome, type Outcome } from '../../lib/outcome'
 import { seatInk } from '../../lib/seatColors'
 import { useGameStore } from '../../store/useGameStore'
 
@@ -14,18 +15,37 @@ const stampStyles: Record<Outcome, string> = {
   closed: 'border-ink text-ink',
 }
 
+const callStyles: Record<Outcome, string> = {
+  caught: 'bg-teal',
+  escaped: 'bg-pink text-paper',
+  closed: 'bg-card',
+}
+
 /** End-of-round reveal: the real postcard turns up, and the spy's seat is stamped on it. */
 export function Verdict(): React.JSX.Element | null {
   const { m, locationName } = useI18n()
+  const label = usePlayerName()
   const round = useGameStore((s) => s.round)
   const votes = useGameStore((s) => s.votes)
   const reset = useGameStore((s) => s.reset)
   if (!round) return null
   const spyCount = round.spySeats.length
   const outcome = roundOutcome(votes, round.spySeats)
+  const names = (seats: readonly number[]): string => seats.map((s) => label(s)).join(', ')
+  const accused = names(accusedSeats(votes, spyCount))
+  const body =
+    outcome === 'caught'
+      ? m.verdict.caughtBody(accused)
+      : outcome === 'escaped'
+        ? m.verdict.escapedBody(accused, names(round.spySeats), spyCount)
+        : m.verdict.closedBody
 
   return (
     <section className="flex flex-col gap-6" aria-label={m.verdict.resultAria}>
+      <div role="status" className={`rounded-2xl border-[3px] border-ink p-4 shadow-hard ${callStyles[outcome]}`}>
+        <h2 className="display text-3xl">{m.verdict.call[outcome]}</h2>
+        <p className="mt-1 text-lg leading-snug">{body}</p>
+      </div>
       <motion.div initial={{ y: 60, rotate: 4, opacity: 0 }} animate={{ y: 0, rotate: -1.5, opacity: 1 }} transition={{ type: 'spring', stiffness: 220, damping: 20 }}>
         <Postcard>
           <div className="relative border-b-[3px] border-ink">
@@ -52,8 +72,8 @@ export function Verdict(): React.JSX.Element | null {
                 {round.spySeats.map((s) => {
                   const ink = seatInk(s)
                   return (
-                    <li key={s} className={`display rounded-lg border-[3px] border-dashed border-ink px-3 py-1 text-3xl ${ink.bg} ${ink.fg}`}>
-                      {m.common.player(s + 1)}
+                    <li key={s} className={`display rounded-lg border-[3px] border-dashed border-ink px-3 py-1 text-3xl [overflow-wrap:anywhere] ${ink.bg} ${ink.fg}`}>
+                      <bdi>{label(s)}</bdi>
                     </li>
                   )
                 })}

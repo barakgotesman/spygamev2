@@ -17,11 +17,14 @@ type GameState = {
   revealSeat: number
   timer: TimerState
   votes: number[]
+  /** Optional player names by seat; kept between games so "Deal again" needs no retyping. */
+  names: string[]
   /** True once the spies have been revealed at the end of a round. */
   verdict: boolean
 
   changePlayers: (delta: number) => void
   changeSpies: (delta: number) => void
+  setName: (seat: number, name: string) => void
   startGame: (locations: readonly Location[]) => boolean
   nextReveal: () => void
   startTimer: (durationMs: number) => void
@@ -35,6 +38,8 @@ type GameState = {
   reset: () => void
 }
 
+export const MAX_NAME_LENGTH = 14
+
 const initialConfig: RoundConfig = { players: 4, spies: 1 }
 
 export const useGameStore = create<GameState>()((set, get) => ({
@@ -44,10 +49,18 @@ export const useGameStore = create<GameState>()((set, get) => ({
   revealSeat: 0,
   timer: { status: 'idle' },
   votes: [],
+  names: [],
   verdict: false,
 
   changePlayers: (delta) => set((s) => ({ config: setPlayers(s.config, s.config.players + delta) })),
   changeSpies: (delta) => set((s) => ({ config: setSpies(s.config, s.config.spies + delta) })),
+
+  setName: (seat, name) =>
+    set((s) => {
+      const names = Array.from({ length: Math.max(s.names.length, seat + 1) }, (_, i) => s.names[i] ?? '')
+      names[seat] = name.slice(0, MAX_NAME_LENGTH)
+      return { names }
+    }),
 
   startGame: (locations) => {
     if (locations.length === 0) return false

@@ -1,4 +1,4 @@
-import { roundOutcome } from './outcome'
+import { accusedSeats, roundOutcome } from './outcome'
 
 describe('roundOutcome', () => {
   it('is closed when nobody voted', () => {
@@ -22,5 +22,17 @@ describe('roundOutcome', () => {
   })
   it('treats a tie across the cut-off of several spies as an escape', () => {
     expect(roundOutcome([3, 1, 1, 0], [0, 1])).toBe('escaped')
+  })
+})
+
+describe('accusedSeats', () => {
+  it('returns the single most-voted seat', () => {
+    expect(accusedSeats([1, 0, 3, 0], 1)).toEqual([2])
+  })
+  it('includes ties at the cut-off', () => {
+    expect(accusedSeats([2, 2, 1, 0], 1)).toEqual([0, 1])
+  })
+  it('ignores seats nobody voted for', () => {
+    expect(accusedSeats([0, 0, 1, 0], 2)).toEqual([2])
   })
 })
