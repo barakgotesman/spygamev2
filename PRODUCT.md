@@ -30,6 +30,16 @@ Original and playful. The user rejected a first dark "noir" redesign as generic 
 ## Evidence on Hand
 No testimonials, metrics or images exist. Default locations: Spa, Casino, Wedding, Airplane, Amusement Park, Night Club, Pub, Restaurant, Supermarket.
 
+## Voice
+The source for all copy, in both languages.
+- Playful and a little mischievous, never "gamer" or corporate. Second person, present tense, short.
+- Buttons are verbs of three words or fewer ("Deal the postcards", "Unmask the spy"); labels name the thing; helper lines carry the personality.
+- One idea per line. No filler ("please", "simply"). A joke never hides what a control does.
+- The postcard conceit is the vocabulary: deal, peek, pass, postcard, lost in the mail, unmask, "places" (not "locations") in UI copy.
+- Claims must be true: no accounts, no tracking, data stays in the browser. Never promise offline use or anything else the app does not do.
+- Hebrew is written for the ear, not translated line by line, and is gender-neutral (infinitives, plural address, "מרגל/ית" for a single person's own role).
+- Role-reveal strings must stay short: they are fitted into a small panel (`useFitText`).
+
 ## Product Principles
 1. The secret is the product: reveal and hide are the signature moments.
 2. One thumb, one hand, bad light, loud room: big targets, instant feedback.

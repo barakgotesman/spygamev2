@@ -11,3 +11,8 @@ export const defaultLocations: readonly Location[] = [
   { id: 'restaurant', name: 'Restaurant', icon: 'restaurant' },
   { id: 'supermarket', name: 'Supermarket', icon: 'supermarket' },
 ]
+
+/** One built-in location by id, for pages that feature specific postcards. */
+export function defaultLocation(id: string): Location | undefined {
+  return defaultLocations.find((l) => l.id === id)
+}

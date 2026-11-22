@@ -123,3 +123,8 @@
   font-family: var(--font-sans);
   letter-spacing: 0;
 }
+
+/* Constant speed for the drifting places row; easing would make it pulse. */
+.places-carousel .swiper-wrapper {
+  transition-timing-function: linear;
+}

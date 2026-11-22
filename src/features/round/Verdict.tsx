@@ -3,16 +3,26 @@ import { Button } from '../../components/Button'
 import { Postcard } from '../../components/Postcard'
 import { Scene } from '../../components/Scene'
 import { useI18n } from '../../i18n/useI18n'
+import { roundOutcome, type Outcome } from '../../lib/outcome'
 import { seatInk } from '../../lib/seatColors'
 import { useGameStore } from '../../store/useGameStore'
+
+/** Stamp colors per outcome; class names written out so Tailwind keeps them. */
+const stampStyles: Record<Outcome, string> = {
+  caught: 'border-pink text-pink',
+  escaped: 'border-blue text-blue',
+  closed: 'border-ink text-ink',
+}
 
 /** End-of-round reveal: the real postcard turns up, and the spy's seat is stamped on it. */
 export function Verdict(): React.JSX.Element | null {
   const { m, locationName } = useI18n()
   const round = useGameStore((s) => s.round)
+  const votes = useGameStore((s) => s.votes)
   const reset = useGameStore((s) => s.reset)
   if (!round) return null
   const spyCount = round.spySeats.length
+  const outcome = roundOutcome(votes, round.spySeats)
 
   return (
     <section className="flex flex-col gap-6" aria-label={m.verdict.resultAria}>
@@ -24,10 +34,10 @@ export function Verdict(): React.JSX.Element | null {
               initial={{ scale: 2.6, rotate: 0, opacity: 0 }}
               animate={{ scale: 1, rotate: 9, opacity: 0.95 }}
               transition={{ type: 'spring', stiffness: 380, damping: 18, delay: 0.35 }}
-              className="display absolute end-3 bottom-3 rounded-lg border-[4px] border-double border-pink bg-card/85 px-3 py-1 text-3xl text-pink"
+              className={`display absolute end-3 bottom-3 rounded-lg border-[4px] border-double ${stampStyles[outcome]} bg-card/85 px-3 py-1 text-3xl`}
               aria-hidden
             >
-              {m.verdict.caught}
+              {m.verdict.stamps[outcome]}
             </motion.p>
           </div>
           <div className="flex flex-col gap-3 px-4 py-4">

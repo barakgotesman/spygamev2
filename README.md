@@ -39,15 +39,28 @@ Open the address Vite prints (usually `http://localhost:5173`).
 | `npm run lint`      | Lint the code                     |
 | `npm run typecheck` | Typecheck only                    |
 
+## Pages
+
+| Route           | What                                             |
+| --------------- | ------------------------------------------------ |
+| `/`             | Landing page                                     |
+| `/how-to-play`  | Rules, example questions, tips and FAQ           |
+| `/locations`    | Gallery of the illustrated postcards             |
+| `/play`         | The game                                         |
+
+It is a client-rendered single-page app, so a static host must serve `index.html` for every path. `vercel.json` (Vercel) and `public/_redirects` (Netlify) already do.
+
 ## Built with
 
-React 19, Vite, TypeScript (strict), Tailwind CSS v4, Zustand, motion, and lucide-react. Tests run on Vitest. Fonts (Bagel Fat One, Familjen Grotesk, Courier Prime, plus Secular One and Heebo for Hebrew) are self-hosted, and there are no external requests.
+React 19, React Router, Vite, TypeScript (strict), Tailwind CSS v4, Zustand, motion, and lucide-react. Tests run on Vitest. Fonts (Bagel Fat One, Familjen Grotesk, Courier Prime, plus Secular One and Heebo for Hebrew) are self-hosted, and there are no external requests.
 
 ## Project layout
 
 ```
 src/
-  features/   setup, reveal, round and settings screens
+  app/        route layouts (site chrome, root)
+  pages/      landing, how to play, locations, 404
+  features/   game (setup, reveal, round, settings screens)
   components/ shared UI (Postcard, Scene, Button, ConfirmDialog, ...)
   store/      Zustand stores (game state, saved settings)
   lib/        pure, unit-tested game logic

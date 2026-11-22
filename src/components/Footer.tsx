@@ -4,7 +4,7 @@ export function Footer({ className = '' }: { className?: string }): React.JSX.El
   const { m } = useI18n()
   return (
     <footer className={`print pt-2 text-center text-xs ${className}`}>
-      {m.footer.postedBy}{' '}
+      {m.footer.builtBy}{' '}
       <a
         className="underline decoration-2 underline-offset-4"
         href="https://www.linkedin.com/in/barak-gotesman-04424015b/"
